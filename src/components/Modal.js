@@ -25,7 +25,7 @@ function Modal({ isVisible, onClose, children }) {
             className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
             onClick={handleOutsideClick}
         >
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-md relative">
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-md sm:max-w-lg relative">
                 <button
                     className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
                     onClick={onClose}
