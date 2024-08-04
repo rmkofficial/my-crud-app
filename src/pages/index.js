@@ -23,7 +23,7 @@ export default function Home() {
     const handleUserAdded = async (newUser) => {
         try {
             await postAPI('/users', newUser);
-            fetchUsers(); // Kullanıcı eklendikten sonra listeyi güncelle
+            fetchUsers(); 
         } catch (error) {
             console.error('Failed to add user:', error);
         }
@@ -32,8 +32,8 @@ export default function Home() {
     const handleUserUpdated = async (updatedUser) => {
         try {
             await putAPI(`/users/${updatedUser.id}`, updatedUser);
-            fetchUsers(); // Kullanıcı güncellendikten sonra listeyi güncelle
-            setSelectedUser(null); // Seçili kullanıcıyı sıfırla
+            fetchUsers(); 
+            setSelectedUser(null); 
         } catch (error) {
             console.error('Failed to update user:', error);
         }
@@ -46,17 +46,23 @@ export default function Home() {
     const handleDeleteUser = async (userId) => {
         try {
             await deleteAPI(`/users/${userId}`);
-            fetchUsers(); // Kullanıcı silindikten sonra listeyi güncelle
+            fetchUsers(); 
         } catch (error) {
             console.error('Failed to delete user:', error);
         }
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">User Management</h1>
-            <UserForm onUserAdded={handleUserAdded} onUserUpdated={handleUserUpdated} selectedUser={selectedUser} />
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+          <div className="w-full max-w-3xl p-6 bg-white shadow-md rounded-lg">
+            <h1 className="text-3xl font-bold mb-6 text-center">User Management</h1>
+            <UserForm
+              onUserAdded={handleUserAdded}
+              onUserUpdated={handleUserUpdated}
+              selectedUser={selectedUser}
+            />
             <UserList users={users} onEdit={handleEditUser} onDelete={handleDeleteUser} />
+          </div>
         </div>
-    );
-}
+      );
+    }
