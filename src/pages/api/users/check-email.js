@@ -2,14 +2,14 @@ import { prisma } from '@/lib/prisma';
 
 const checkEmail = async (req, res) => {
     if (req.method === 'POST') {
-        const { email } = req.body;
+        const { email, id } = req.body;
 
         try {
             const existingUser = await prisma.user.findUnique({
                 where: { email }
             });
 
-            if (existingUser) {
+            if (existingUser && existingUser.id !== id) {
                 res.status(200).json({ exists: true });
             } else {
                 res.status(200).json({ exists: false });

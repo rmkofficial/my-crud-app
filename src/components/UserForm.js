@@ -33,11 +33,12 @@ function UserForm({ onUserAdded, onUserUpdated, selectedUser }) {
         } else if (!/\S+@\S+\.\S+/.test(email)) {
             formErrors.email = 'Email address is invalid';
             isValid = false;
-        } else if (!isEditing) {
+        } else {
+            // Güncelleme sırasında mevcut e-posta kontrolü
             const response = await fetch('/api/users/check-email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ email, id: selectedUser?.id })
             });
             const { exists } = await response.json();
             if (exists) {
