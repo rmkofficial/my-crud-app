@@ -1,11 +1,10 @@
-// src/components/UserForm.js
-
 import React, { useState, useEffect } from 'react';
 
 function UserForm({ onUserAdded, onUserUpdated, selectedUser }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [isEditing, setIsEditing] = useState(false);
+    const [errors, setErrors] = useState({ name: '', email: '' });
 
     useEffect(() => {
         if (selectedUser) {
@@ -19,12 +18,46 @@ function UserForm({ onUserAdded, onUserUpdated, selectedUser }) {
         }
     }, [selectedUser]);
 
-    const handleSubmit = (e) => {
+    const validateForm = async () => {
+        let formErrors = { name: '', email: '' };
+        let isValid = true;
+
+        if (!name) {
+            formErrors.name = 'Name is required';
+            isValid = false;
+        }
+
+        if (!email) {
+            formErrors.email = 'Email is required';
+            isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            formErrors.email = 'Email address is invalid';
+            isValid = false;
+        } else if (!isEditing) {
+            const response = await fetch('/api/users/check-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const { exists } = await response.json();
+            if (exists) {
+                formErrors.email = 'This email is already in use';
+                isValid = false;
+            }
+        }
+
+        setErrors(formErrors);
+        return isValid;
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (isEditing) {
-            onUserUpdated({ id: selectedUser.id, name, email });
-        } else {
-            onUserAdded({ name, email });
+        if (await validateForm()) {
+            if (isEditing) {
+                onUserUpdated({ id: selectedUser.id, name, email });
+            } else {
+                onUserAdded({ name, email });
+            }
         }
     };
 
@@ -39,6 +72,7 @@ function UserForm({ onUserAdded, onUserUpdated, selectedUser }) {
                     className="w-full mt-2 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />
+                {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
             </div>
             <div>
                 <label className="block text-gray-700 font-semibold">Email</label>
@@ -49,6 +83,7 @@ function UserForm({ onUserAdded, onUserUpdated, selectedUser }) {
                     className="w-full mt-2 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />
+                {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
             </div>
             <button
                 type="submit"
