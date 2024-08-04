@@ -34,7 +34,6 @@ function UserForm({ onUserAdded, onUserUpdated, selectedUser }) {
             formErrors.email = 'Email address is invalid';
             isValid = false;
         } else {
-            // Güncelleme sırasında mevcut e-posta kontrolü
             const response = await fetch('/api/users/check-email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

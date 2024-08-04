@@ -50,7 +50,6 @@ const deleteAPI = async (
     });
 
     if (response.status === 204 || response.status === 200) {
-      // 204 No Content veya 200 OK durumda yanıt gövdesi boş olabilir
       return { status: "success" };
     } else {
       const data = await response.json();

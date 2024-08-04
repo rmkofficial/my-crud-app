@@ -6,7 +6,6 @@ export default async function handler(req, res) {
     const { id } = req.query;
 
     if (req.method === 'PUT') {
-        // Kullanıcıyı güncelleme
         const { name, email } = req.body;
         try {
             const updatedUser = await prisma.user.update({
@@ -18,7 +17,6 @@ export default async function handler(req, res) {
             res.status(404).json({ error: 'User not found' });
         }
     } else if (req.method === 'DELETE') {
-        // Kullanıcıyı silme
         try {
             await prisma.user.delete({
                 where: { id: String(id) },

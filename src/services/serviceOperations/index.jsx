@@ -39,9 +39,11 @@ export async function deleteDataByAny(tableName, where) {
   }
 }
 
-export default {
+const serviceOperations = {
   getAllData,
   createNewData,
   updateDataByAny,
   deleteDataByAny,
 };
+
+export default serviceOperations;
