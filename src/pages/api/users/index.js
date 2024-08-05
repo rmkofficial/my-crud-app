@@ -1,10 +1,8 @@
-// /src/pages/api/users/index.js
-
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import serviceOperations from '@/services/serviceOperations';
 
 export default async function handler(req, res) {
+    const tableName = 'User';
+
     res.setHeader('Access-Control-Allow-Origin', 'https://my-crud-app-theta.vercel.app');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -16,23 +14,15 @@ export default async function handler(req, res) {
 
     try {
         if (req.method === 'GET') {
-            const users = await prisma.user.findMany();
+            const users = await serviceOperations.getAllData(tableName);
             res.status(200).json(users);
         } else if (req.method === 'POST') {
             const { name, email } = req.body;
             if (!name || !email) {
                 return res.status(400).json({ error: 'Name and email are required' });
             }
-
-            try {
-                const newUser = await prisma.user.create({
-                    data: { name, email },
-                });
-                res.status(201).json(newUser);
-            } catch (error) {
-                console.error('Database error:', error);
-                res.status(500).json({ error: 'Database error occurred while creating user' });
-            }
+            const newUser = await serviceOperations.createNewData(tableName, { name, email });
+            res.status(201).json(newUser);
         } else {
             res.setHeader('Allow', ['GET', 'POST']);
             res.status(405).end(`Method ${req.method} Not Allowed`);

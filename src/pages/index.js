@@ -1,5 +1,3 @@
-// src/pages/index.js
-
 import React, { useEffect, useState } from 'react';
 import UserForm from '../components/UserForm';
 import UserList from '../components/UserList';
@@ -18,7 +16,7 @@ export default function Home() {
     const fetchUsers = async () => {
         try {
             const data = await getAPI('/users');
-            setUsers(data);
+            setUsers(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Failed to fetch users:', error);
         }
@@ -72,7 +70,11 @@ export default function Home() {
                 >
                     Add User
                 </button>
-                <UserList users={users} onEdit={handleEditUser} onDelete={handleDeleteUser} />
+                {Array.isArray(users) && users.length > 0 ? (
+                    <UserList users={users} onEdit={handleEditUser} onDelete={handleDeleteUser} />
+                ) : (
+                    <p className="text-center text-gray-500">No users available.</p>
+                )}
             </div>
 
             <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)}>
